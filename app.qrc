@@ -1,0 +1,5 @@
+<RCC>
+  <qresource prefix="App">
+    <file>Audio recorder.ico</file>
+  </qresource>
+</RCC>
