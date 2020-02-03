@@ -61,4 +61,5 @@ private:
 	void setupUIElements();
 	void setupAudioRecorder();
 	void closeEvent(QCloseEvent* event) override;
+	void setPath(const QString& path);
 };

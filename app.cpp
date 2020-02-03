@@ -1,7 +1,7 @@
 #include "app.h"
 
-#include <qfiledialog.h>
-#include <qstandardpaths.h>
+#include <QFileDialog>
+#include <QStandardPaths>
 
 #include <QAudioProbe>
 #include <QAudioRecorder>
@@ -22,9 +22,7 @@ App::App(QWidget *parent) : QMainWindow(parent), outputLocationSet(false), appSe
 	setupUIElements();
 	setupAudioRecorder();
 
-	audioOutputPath = QStandardPaths::writableLocation(QStandardPaths::DesktopLocation)+"/" + QDateTime::currentDateTime().toString("hh:mm:ss.z")+".wav";
-
-	outputFileName->setText(audioOutputPath);
+	setPath(QStandardPaths::writableLocation(QStandardPaths::MusicLocation) + "/" + QDateTime::currentDateTime().toString("hh-mm-ss-z") + ".wav");
 
 	setShortcut();
 	qDebug() << "Is registered: " << shortcut->isRegistered();
@@ -37,8 +35,10 @@ App::App(QWidget *parent) : QMainWindow(parent), outputLocationSet(false), appSe
 		qDebug() << "loading data from json!";
 		shortcutEdit->setKeySequence(appSettings.getShortcut());
 		setShortcut();
-		audioOutputPath = appSettings.getPath();
+		audioOutputPath = appSettings.getPath() + QDateTime::currentDateTime().toString("hh-mm-ss-z") + ".wav";
 		outputFileName->setText(audioOutputPath);
+		audioRecorder->setOutputLocation(QUrl::fromLocalFile(audioOutputPath));
+		outputLocationSet = true;
 		codecsBox->setCurrentIndex(codecsBox->findData(QVariant(appSettings.getCodec())));
 		devicesBox->setCurrentIndex(appSettings.getDevice());
 		ui.fileContainerBox->setCurrentIndex(ui.fileContainerBox->findData(QVariant(appSettings.getContainer())));
@@ -59,16 +59,11 @@ static QVariant boxValue(const QComboBox* box) {
 
 void App::setAudioOutputFile() {
 	auto path = QFileDialog::getSaveFileName(this, tr("Save audio"), QStandardPaths::writableLocation(QStandardPaths::DesktopLocation), tr("Audio files (*.wav)"));
-	outputFileName->setText(path);
-	audioOutputPath = path;
-	outputLocationSet = true;
-	audioRecorder->setOutputLocation(QUrl::fromLocalFile(path));
+	setPath(path);
 }
 
 void App::pathTextBoxChanged(const QString& text) {
-	audioOutputPath = text;
-
-	outputLocationSet = true;
+	setPath(text);
 }
 
 void App::setCodec(const QString& text) {
@@ -100,6 +95,9 @@ void App::record() {
 	}
 	else {
 		audioRecorder->stop();
+		auto oldPath = audioOutputPath.toStdString();
+		auto path = QString::fromStdString(oldPath.erase(oldPath.length() - 4));
+		setPath(path + "_" + QDateTime::currentDateTime().toString("hh-mm-ss-z") + ".wav");
 	}
 }
 
@@ -175,6 +173,13 @@ void App::closeEvent(QCloseEvent* event) {
 	appSettings.setDevice(devicesBox->currentIndex());
 
 	appSettings.saveToJSON("settings.json");
+}
+
+void App::setPath(const QString& path) {
+	audioOutputPath = path;
+	outputFileName->setText(path);
+	audioRecorder->setOutputLocation(QUrl::fromLocalFile(audioOutputPath));
+	outputLocationSet = true;
 }
 
 void App::onStateChanged(QMediaRecorder::State state) {
