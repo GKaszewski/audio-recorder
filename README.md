@@ -6,8 +6,8 @@
 ---
 
 ### Third party: 
-[QHotkey for global shortcut](https://github.com/Skycoder42/QHotkey)
-[JSON](https://github.com/nlohmann/json)
+1. [QHotkey for global shortcut](https://github.com/Skycoder42/QHotkey)
+2. [JSON](https://github.com/nlohmann/json)
 
 ---
 
