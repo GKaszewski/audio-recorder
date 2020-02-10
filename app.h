@@ -13,7 +13,7 @@
 
 #include "ui_app.h"
 
-#include "QHotkey/qhotkey.h"
+#include <QHotkey>
 #include "appsettings.h"
 
 class QAudioRecorder;
