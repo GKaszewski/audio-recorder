@@ -14,7 +14,7 @@
 ### Building
 
 This project was developed on Windows. If you want you can clone it and run .sln file and you should be good to go. 
-For Mac/Linux please use .pro file. 
+For Linux go see `linux` branch :D] 
 
 ---
 
