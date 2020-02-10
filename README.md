@@ -8,6 +8,7 @@
 ### Third party: 
 1. [QHotkey for global shortcut](https://github.com/Skycoder42/QHotkey)
 2. [JSON](https://github.com/nlohmann/json)
+3. [Qpm](https://github.com/Cutehacks/qpm/blob/master/README.md#installing)
 
 ---
 
